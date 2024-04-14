@@ -1,0 +1,110 @@
+h1 {
+  text-align: center;
+}
+
+.trick-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.trick-heading-1 {
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+}
+
+.trick-heading-2 {
+  width: 80%;
+  font-weight: bold;
+  text-align: center;
+}
+
+.trick-heading-3 {
+  width: 50%;
+  font-weight: bold;
+  text-align: center;
+}
+
+.trick-column-1 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.trick-column-2 {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.trick-column-3 {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.trick-name {
+  display: flex;
+  justify-content: left;
+  padding: 3px 0px 3px 20px;
+}
+
+.trick-button {
+  display: flex;
+  justify-content: center;
+  padding: 3px 0px 3px 0px;
+}
+
+.trick-difficulty {
+  display: flex;
+  justify-content: center;
+  padding: 3px 0px 3px 0px;
+}
+
+.trick-name-name {
+  height: 30px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.trick-button-button {
+  width: 80px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.difficulty-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.difficulty-1 {
+  background-color: blue;
+}
+
+.difficulty-2 {
+  background-color: red;
+}
+
+.difficulty-3 {
+  background-color: black;
+}
+
+.second-0 {
+  background-color: none;
+}
+
+.second-1 {
+  background-color: lightgray;
+}
