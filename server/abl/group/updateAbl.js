@@ -10,6 +10,13 @@ const schema = {
   properties: {
     id: { type: "string" },
     name: { type: "string" },
+    creatorId: { type: "string" },
+    membersList: {
+      type: "array",
+      items: {
+        type: "string",
+      },
+    },
   },
   required: ["id"],
   additionalProperties: false,

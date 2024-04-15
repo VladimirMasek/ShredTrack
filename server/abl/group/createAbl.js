@@ -8,6 +8,13 @@ const schema = {
   properties: {
     //property: { type: "datatype" },
     name: { type: "string" },
+    creatorId: { type: "string" },
+    membersList: {
+      type: "array",
+      items: {
+        type: "string",
+      },
+    },
   },
   required: ["name"],
   additionalProperties: false,

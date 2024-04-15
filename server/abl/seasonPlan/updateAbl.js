@@ -11,6 +11,19 @@ const schema = {
     id: { type: "string" },
     startDate: { type: "string", format: "date-time" },
     endDate: { type: "string", format: "date-time" },
+    userId: { type: "string" },
+    trickList: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          finished: { type: "integer", enum: [0, 1] },
+        },
+        required: ["id", "finished"],
+        additionalProperties: false,
+      },
+    },
   },
   required: ["id"],
   additionalProperties: false,
