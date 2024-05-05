@@ -2,7 +2,6 @@ import SeasonPlan from "./components/SeasonPlan.js";
 import Group from "./components/Group.js";
 import Trickroulette from "./components/Trickroulette.js";
 import Tricklopedia from "./components/Tricklopedia.js";
-import Home from "./components/Home.js";
 
 import Layout from "./components/Layout.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -19,7 +18,6 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
               <Route
                 path="SeasonPlan"
                 element={
