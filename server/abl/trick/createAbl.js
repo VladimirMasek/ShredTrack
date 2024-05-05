@@ -23,7 +23,6 @@ const schema = {
 async function CreateAbl(req, res) {
   try {
     let trick = req.body;
-    console.log(trick);
 
     // validate input
     const valid = ajv.validate(schema, trick);

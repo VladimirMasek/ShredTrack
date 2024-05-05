@@ -9,6 +9,7 @@ const schema = {
     //property: { type: "datatype" },
     name: { type: "string" },
     surname: { type: "string" },
+    points: { type: "integer" },
   },
   required: ["name", "surname"],
   additionalProperties: false,
@@ -17,6 +18,8 @@ const schema = {
 async function CreateAbl(req, res) {
   try {
     let user = req.body;
+
+    
 
     // validate input
     const valid = ajv.validate(schema, user);

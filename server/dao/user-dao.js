@@ -66,9 +66,45 @@ function list() {
       const fileData = fs.readFileSync(path.join(userFolderPath, file), "utf8");
       return JSON.parse(fileData);
     });
+    userList.sort((a, b) => b.points - a.points);
     return userList;
   } catch (error) {
     throw { code: "failedToListUsers", message: error.message };
+  }
+}
+
+function updateAddOrSubtractPoints(userId, points, addOrSubtract) {
+  try {
+    // Retrieve the current user
+    const currentUser = get(userId);
+    if (!currentUser) return null;
+    const newPoints = addOrSubtract
+      ? currentUser.points + points
+      : currentUser.points - points;
+    const updatedPoints = Math.max(newPoints, 0);
+    const updatedUser = { ...currentUser, points: updatedPoints };
+    const filePath = path.join(userFolderPath, `${userId}.json`);
+    const fileData = JSON.stringify(updatedUser);
+    fs.writeFileSync(filePath, fileData, "utf8");
+    return updatedUser;
+  } catch (error) {
+    throw { code: "failedToUpdateUser", message: error.message };
+  }
+}
+
+function getUserListByIds(members) {
+  try {
+    const userList = [];
+    for (const memberId of members) {
+      const user = get(memberId);
+      if (user) {
+        userList.push(user);
+      }
+    }
+    userList.sort((a, b) => b.points - a.points);
+    return userList;
+  } catch (error) {
+    throw { code: "failedToGetUserList", message: error.message };
   }
 }
 
@@ -78,4 +114,6 @@ module.exports = {
   update,
   remove,
   list,
+  updateAddOrSubtractPoints,
+  getUserListByIds,
 };

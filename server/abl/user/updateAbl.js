@@ -11,6 +11,7 @@ const schema = {
     id: { type: "string" },
     name: { type: "string" },
     surname: { type: "string" },
+    points: { type: "integer" },
   },
   required: ["id"],
   additionalProperties: false,

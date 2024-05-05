@@ -1,88 +1,109 @@
-import "./Group.css";
-
-class User {
-  constructor(id, name, surname, role, points) {
-    this.id = id;
-    this.name = name;
-    this.surname = surname;
-    this.role = role;
-    this.points = points;
-  }
-}
-
-const users = [
-  new User(1, "Mark", "McMorris", "Snowboarder", 150),
-  new User(2, "Travis", "Rice", "Snowboarder", 120),
-  new User(3, "Chloe", "Kim", "Snowboarder", 90),
-  new User(4, "Shaun", "White", "Snowboarder", 80),
-  new User(5, "Jamie", "Anderson", "Snowboarder", 110),
-  new User(6, "Ayumu", "Hirano", "Snowboarder", 100),
-  new User(7, "Kelly", "Clark", "Snowboarder", 70),
-  new User(8, "Torstein", "Horgmo", "Snowboarder", 130),
-  new User(9, "Elena", "Hight", "Snowboarder", 95),
-  new User(10, "Sebastien", "Toutant", "Snowboarder", 85),
-  new User(11, "Hannah", "Teter", "Snowboarder", 140),
-  new User(12, "Ståle", "Sandbech", "Snowboarder", 75),
-  new User(13, "Silje", "Norendal", "Snowboarder", 105),
-  new User(14, "Kevin", "Pearce", "Snowboarder", 115),
-  new User(15, "Scotty", "Lago", "Snowboarder", 125),
-];
-
-users.sort((a, b) => b.points - a.points);
+import React, { useContext, useEffect, useState } from "react";
+import ListGroup from "react-bootstrap/ListGroup";
+import Carousel from "react-bootstrap/Carousel";
+import { UserContext } from "./UserContext";
+import { UserListContext } from "./UserListContext.js";
 
 const Group = () => {
-  let rowIndex = 0;
+  const { userHandlerMap } = useContext(UserListContext);
+  const { loggedInUser } = useContext(UserContext);
+  const [groups, setGroups] = useState([]);
+
+  useEffect(() => {
+    if (loggedInUser && !groups.length) {
+      userHandlerMap
+        .handleGetUsersGroups(loggedInUser.id)
+        .then((groups) => {
+          Promise.all(
+            groups.map((group) =>
+              userHandlerMap.handleGetUserListByIds(group.members)
+            )
+          ).then((userLists) => {
+            const groupsWithUsers = groups.map((group, index) => ({
+              ...group,
+              users: userLists[index],
+            }));
+            setGroups(groupsWithUsers);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching groups:", error);
+        });
+    }
+  }, [loggedInUser, userHandlerMap, groups]);
+
+  if (!loggedInUser) {
+    return (
+      <div style={{ minHeight: "88vh", textAlign: "center" }}>
+        <h1>Group</h1>
+        <p>Please log in to see your Groups.</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Group name</h1>
-
-      <div className="heading">
-        <p className="group-heading-1">Position</p>
-        <p className="group-heading-2">Name</p>
-        <p className="group-heading-3">Points</p>
-      </div>
-
-      <div className="group-container">
-        <div className="group-column-1">
-          {users.map((user) => (
+    <div style={{ minHeight: "88vh" }}>
+      <h1>Groups</h1>
+      <Carousel
+        style={{ minHeight: "80vh", paddingBottom: "5%" }}
+        variant="dark"
+      >
+        {groups.map((group, groupIndex) => (
+          <Carousel.Item key={groupIndex}>
             <div
-              key={user.id}
-              className={`group-position second-${
-                rowIndex++ % 2 === 0 ? 1 : 0
-              }`}
+              className="carousel-caption-top"
+              style={{ textAlign: "center" }}
             >
-              <div className="group-userPosition">{rowIndex}</div>
+              <h4>{group.name}</h4>
             </div>
-          ))}
-        </div>
-
-        <div className="group-column-2">
-          {users.map((user) => (
-            <div
-              className={`group-name second-${rowIndex++ % 2 === 1 ? 1 : 0}`}
-              key={user.id}
-            >
-              <div className="group-userName">
-                {`${user.name} ${user.surname}`}
-              </div>
+            <div className="listContainer">
+              <ListGroup className="groupContainer">
+                <ListGroup.Item>
+                  <ListGroup horizontal>
+                    <ListGroup.Item style={listItem(1, 25)}>
+                      <b>Position</b>
+                    </ListGroup.Item>
+                    <ListGroup.Item style={listItem(1, 50)}>
+                      <b>Name</b>
+                    </ListGroup.Item>
+                    <ListGroup.Item style={listItem(1, 25)}>
+                      <b>Points</b>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  {group.users.map((user, userIndex) => (
+                    <ListGroup horizontal key={`${groupIndex}-${userIndex}`}>
+                      <ListGroup.Item style={listItem(userIndex, 25)}>
+                        {userIndex + 1}
+                      </ListGroup.Item>
+                      <ListGroup.Item style={listItem(userIndex, 50)}>
+                        {user.name} {user.surname}
+                      </ListGroup.Item>
+                      <ListGroup.Item style={listItem(userIndex, 25)}>
+                        {user.points}
+                      </ListGroup.Item>
+                    </ListGroup>
+                  ))}
+                </ListGroup.Item>
+              </ListGroup>
             </div>
-          ))}
-        </div>
-
-        <div className="group-column-3">
-          {users.map((user) => (
-            <div
-              className={`group-points second-${rowIndex++ % 2 === 0 ? 1 : 0}`}
-              key={user.id}
-            >
-              <div className="group-userPoints">{user.points}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+          </Carousel.Item>
+        ))}
+      </Carousel>
     </div>
   );
+};
+
+const listItem = (index, widthInput) => {
+  return {
+    backgroundColor: index % 2 === 0 ? "lightgrey" : "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: `${widthInput}%`,
+    textAlign: "center",
+  };
 };
 
 export default Group;

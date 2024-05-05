@@ -1,1 +1,9 @@
-{"name":"Tailgrab","image":"tailgrab.jpg","description":"The rider reaches down and grabs the tail of the snowboard with the rear hand while in mid-air.","difficulty":1,"feature":"jump","points":57,"id":"aa458590f4e0977d68966d12790b516a"}
+{
+  "name": "Tailgrab",
+  "image": "tailgrab.jpg",
+  "description": "The rider reaches down and grabs the tail of the snowboard with the rear hand while in mid-air.",
+  "difficulty": 1,
+  "feature": "jump",
+  "points": 57,
+  "id": "aa458590f4e0977d68966d12790b516a"
+}

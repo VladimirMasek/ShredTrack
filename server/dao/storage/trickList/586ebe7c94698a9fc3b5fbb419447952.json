@@ -1,1 +1,9 @@
-{"name":"Frontside Lipslide","image":"frontside_lipslide.jpg","description":"Similar to a frontside boardslide, but the rider approaches the rail at a sharper angle, allowing the board to slide along the edge of the rail.","difficulty":3,"feature":"rail","points":81,"id":"586ebe7c94698a9fc3b5fbb419447952"}
+{
+  "name": "Frontside Lipslide",
+  "image": "frontside_lipslide.jpg",
+  "description": "Similar to a frontside boardslide, but the rider approaches the rail at a sharper angle, allowing the board to slide along the edge of the rail.",
+  "difficulty": 3,
+  "feature": "rail",
+  "points": 81,
+  "id": "586ebe7c94698a9fc3b5fbb419447952"
+}

@@ -12,7 +12,7 @@ const schema = {
     startDate: { type: "string", format: "date-time" },
     endDate: { type: "string", format: "date-time" },
     userId: { type: "string" },
-    trickList: {
+    userTrickList: {
       type: "array",
       items: {
         type: "object",

@@ -1,1 +1,9 @@
-{"name":"Backside 180","image":"backside_180.jpg","description":"A basic trick where the rider rotates 180 degrees in the air while jumping off the kicker or a rail.","difficulty":2,"feature":"jump","points":73,"id":"249ab28c543a559099df553a3712f188"}
+{
+  "name": "Backside 180",
+  "image": "backside_180.jpg",
+  "description": "A basic trick where the rider rotates 180 degrees in the air while jumping off the kicker or a rail.",
+  "difficulty": 2,
+  "feature": "jump",
+  "points": 73,
+  "id": "249ab28c543a559099df553a3712f188"
+}

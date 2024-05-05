@@ -16,6 +16,25 @@ function get(seasonPlanId) {
   }
 }
 
+function getUserTrickList(userId) {
+  try {
+    const files = fs.readdirSync(seasonPlanFolderPath);
+    for (const file of files) {
+      const filePath = path.join(seasonPlanFolderPath, file);
+      const fileData = fs.readFileSync(filePath, "utf8");
+      const seasonPlan = JSON.parse(fileData);
+      if (seasonPlan.userId === userId) {
+        return seasonPlan.userTrickList;
+      }
+    }
+
+    return [];
+  } catch (error) {
+    if (error.code === "ENOENT") return [];
+    throw { code: "failedToReadSeasonPlan", message: error.message };
+  }
+}
+
 // Method to write an seasonPlan to a file
 function create(seasonPlan) {
   try {
@@ -63,7 +82,10 @@ function list() {
   try {
     const files = fs.readdirSync(seasonPlanFolderPath);
     const seasonPlanList = files.map((file) => {
-      const fileData = fs.readFileSync(path.join(seasonPlanFolderPath, file), "utf8");
+      const fileData = fs.readFileSync(
+        path.join(seasonPlanFolderPath, file),
+        "utf8"
+      );
       return JSON.parse(fileData);
     });
     return seasonPlanList;
@@ -72,10 +94,73 @@ function list() {
   }
 }
 
+function updateUserTrickStatus(userId, trickId, finished) {
+  try {
+    const files = fs.readdirSync(seasonPlanFolderPath);
+    for (const file of files) {
+      const filePath = path.join(seasonPlanFolderPath, file);
+      const fileData = fs.readFileSync(filePath, "utf8");
+      const seasonPlan = JSON.parse(fileData);
+      if (seasonPlan.userId === userId) {
+        const updatedUserTrickList = seasonPlan.userTrickList.map((trick) => {
+          if (trick.id === trickId) {
+            return { ...trick, finished };
+          }
+          return trick;
+        });
+        seasonPlan.userTrickList = updatedUserTrickList;
+        fs.writeFileSync(filePath, JSON.stringify(seasonPlan), "utf8");
+        return { success: true };
+      }
+    }
+    throw {
+      code: "seasonPlanNotFound",
+      message: `SeasonPlan for user ${userId} not found`,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+function updateAddOrRemoveTrick(userId, trickId, exists) {
+  try {
+    const files = fs.readdirSync(seasonPlanFolderPath);
+    for (const file of files) {
+      const filePath = path.join(seasonPlanFolderPath, file);
+      const fileData = fs.readFileSync(filePath, "utf8");
+      const seasonPlan = JSON.parse(fileData);
+      if (seasonPlan.userId === userId) {
+        let updatedUserTrickList;
+        if (exists) {
+          // Trick exists, remove it from userTrickList
+          updatedUserTrickList = seasonPlan.userTrickList.filter(
+            (trick) => trick.id !== trickId
+          );
+        } else {
+          // Trick does not exist, add it to userTrickList
+          updatedUserTrickList = [...seasonPlan.userTrickList, { id: trickId }];
+        }
+        seasonPlan.userTrickList = updatedUserTrickList;
+        fs.writeFileSync(filePath, JSON.stringify(seasonPlan), "utf8");
+        return { success: true };
+      }
+    }
+    throw {
+      code: "seasonPlanNotFound",
+      message: `SeasonPlan for user ${userId} not found`,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   get,
+  getUserTrickList,
   create,
   update,
+  updateAddOrRemoveTrick,
   remove,
   list,
+  updateUserTrickStatus,
 };

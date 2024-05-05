@@ -63,12 +63,34 @@ function list() {
   try {
     const files = fs.readdirSync(groupFolderPath);
     const groupList = files.map((file) => {
-      const fileData = fs.readFileSync(path.join(groupFolderPath, file), "utf8");
+      const fileData = fs.readFileSync(
+        path.join(groupFolderPath, file),
+        "utf8"
+      );
       return JSON.parse(fileData);
     });
     return groupList;
   } catch (error) {
     throw { code: "failedToListGroups", message: error.message };
+  }
+}
+
+function getUsersGroups(userId) {
+  try {
+    const groups = [];
+    const files = fs.readdirSync(groupFolderPath);
+    for (const file of files) {
+      const filePath = path.join(groupFolderPath, file);
+      const fileData = fs.readFileSync(filePath, "utf8");
+      const group = JSON.parse(fileData);
+      if (group.members.includes(userId)) {
+        groups.push(group);
+      }
+    }
+    return groups;
+  } catch (error) {
+    if (error.code === "ENOENT") return null;
+    throw { code: "failedToReadGroup", message: error.message };
   }
 }
 
@@ -78,4 +100,5 @@ module.exports = {
   update,
   remove,
   list,
+  getUsersGroups,
 };

@@ -1,257 +1,249 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./Trickroulette.css";
 
-class Trick {
-  constructor(id, name, difficulty, feature, points, description, image, done) {
-    this.id = id;
-    this.name = name;
-    this.difficulty = difficulty >= 1 && difficulty <= 3 ? difficulty : 1; // Ensuring difficulty is within the range 1-3
-    this.feature = feature;
-    this.points = points;
-    this.description = description;
-    this.image = image;
-    this.done = done || false; // Defaulting done to false if not provided
-  }
-}
+import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import { TricklistContext } from "./TricklistContext";
 
-const tricks = [
-  new Trick(
-    1,
-    "Frontside 180",
-    2,
-    "Jump",
-    50,
-    "A trick where the rider rotates 180 degrees in the frontside direction while in the air.",
-    "frontside_180.jpg",
-    false
-  ),
-  new Trick(
-    2,
-    "Backside Boardslide",
-    3,
-    "Rail",
-    80,
-    "A trick where the rider slides along a rail with the snowboard perpendicular to the direction of travel, facing backward.",
-    "backside_boardslide.jpg",
-    true
-  ),
-  new Trick(
-    3,
-    "Method Grab",
-    2,
-    "Jump",
-    70,
-    "A stylish trick where the rider grabs the heel edge of the snowboard with the rear hand while tweaking the body.",
-    "method_grab.jpg",
-    false
-  ),
-  new Trick(
-    4,
-    "50-50",
-    1,
-    "Rail",
-    30,
-    "A basic trick where the rider slides straight along a rail with both the board and body perpendicular to it.",
-    "5050.jpg",
-    true
-  ),
-  new Trick(
-    5,
-    "Switch Backside 360",
-    3,
-    "Jump",
-    90,
-    "A challenging trick where the rider rotates 360 degrees in the backside direction while riding switch.",
-    "switch_backside_360.jpg",
-    false
-  ),
-  new Trick(
-    6,
-    "Nosepress",
-    2,
-    "Rail",
-    60,
-    "A trick where the rider applies pressure to the nose of the snowboard while sliding along a rail.",
-    "nosepress.jpg",
-    false
-  ),
-  new Trick(
-    7,
-    "Indy Grab",
-    2,
-    "Jump",
-    65,
-    "A classic trick where the rider grabs the toe edge of the snowboard with the front hand while tweaking the body.",
-    "indy_grab.jpg",
-    false
-  ),
-  new Trick(
-    8,
-    "Tailslide",
-    3,
-    "Rail",
-    75,
-    "A trick where the rider slides along a rail with the tail of the snowboard and the body facing forward.",
-    "tailslide.jpg",
-    true
-  ),
-  new Trick(
-    9,
-    "Cab 540",
-    3,
-    "Jump",
-    85,
-    "A trick where the rider rotates 540 degrees in the backside direction while riding switch.",
-    "cab_540.jpg",
-    false
-  ),
-  new Trick(
-    10,
-    "Frontside Boardslide",
-    2,
-    "Rail",
-    70,
-    "A trick where the rider slides along a rail with the snowboard perpendicular to the direction of travel, facing forward.",
-    "frontside_boardslide.jpg",
-    true
-  ),
-  new Trick(
-    11,
-    "Method Air",
-    3,
-    "Jump",
-    80,
-    "A stylish trick where the rider grabs the heel edge of the snowboard with the rear hand while extending the legs.",
-    "method_air.jpg",
-    false
-  ),
-  new Trick(
-    12,
-    "Lipslide",
-    3,
-    "Rail",
-    75,
-    "A trick where the rider slides along a rail with the snowboard and the body facing forward.",
-    "lipslide.jpg",
-    true
-  ),
-  new Trick(
-    13,
-    "Misty Flip",
-    3,
-    "Jump",
-    90,
-    "A complex trick where the rider performs a backflip while rotating 540 degrees in the frontside direction.",
-    "misty_flip.jpg",
-    false
-  ),
-  new Trick(
-    14,
-    "Roastbeef Grab",
-    2,
-    "Jump",
-    60,
-    "A trick where the rider grabs the heel edge of the snowboard with the rear hand and passes the front leg through the grab.",
-    "roastbeef_grab.jpg",
-    false
-  ),
-  new Trick(
-    15,
-    "Bluntslide",
-    3,
-    "Rail",
-    80,
-    "A trick where the rider slides along a rail with the snowboard perpendicular to the direction of travel, with the tail pressed against the rail.",
-    "bluntslide.jpg",
-    true
-  ),
-];
-
-const TrickRoulette = ({ tricks }) => {
-  const [selectedDifficulty, setSelectedDifficulty] = useState(1);
-  const [selectedFeature, setSelectedFeature] = useState("Jump");
+const TrickRoulette = () => {
+  const [selectedDifficulty, setSelectedDifficulty] = useState("All");
+  const [selectedFeature, setSelectedFeature] = useState("All");
+  const [filteredTricks, setFilteredTricks] = useState([]);
   const [generatedTrick, setGeneratedTrick] = useState(null);
+  const [lastGeneratedTrick, setLastGeneratedTrick] = useState(null);
+  const [hasChanged, setHasChanged] = useState(false); // Track if input has changed
+  const { trickList } = useContext(TricklistContext);
 
-  const handleGenerateTrick = () => {
-    // Filter tricks based on selected difficulty and feature
-    const filteredTricks = tricks.filter(
-      (trick) =>
-        trick.difficulty === selectedDifficulty &&
-        trick.feature === selectedFeature
-    );
+  useEffect(() => {
+    // Initialize filteredTricks with the entire trickList on component mount
+    setFilteredTricks(trickList);
+  }, [trickList]);
 
-    // Randomly select a trick from filteredTricks array
-    const randomIndex = Math.floor(Math.random() * filteredTricks.length);
-    const randomTrick = filteredTricks[randomIndex];
+  const handleSubmit = async () => {
+    try {
+      let updatedFilteredTricks = [...trickList]; // Copy trickList
 
-    // Set the generated trick
-    setGeneratedTrick(randomTrick);
+      if (selectedDifficulty !== "All") {
+        updatedFilteredTricks = updatedFilteredTricks.filter(
+          (trick) => trick.difficulty === parseInt(selectedDifficulty)
+        );
+      }
+      if (selectedFeature !== "All") {
+        updatedFilteredTricks = updatedFilteredTricks.filter(
+          (trick) =>
+            trick.feature.toLowerCase() === selectedFeature.toLowerCase()
+        );
+      }
+
+      setFilteredTricks(updatedFilteredTricks);
+      setHasChanged(false); // Reset hasChanged after submission
+    } catch (error) {
+      console.error("Error filtering tricks:", error);
+    }
   };
 
+  const handleGenerateTrick = () => {
+    let randomTrick = getRandomTrick();
+
+    // If no filtered tricks available or if the generated trick is the same as the last one
+    if (!randomTrick) {
+      // If no filtered tricks available, reset generated trick
+      setGeneratedTrick(null);
+    } else {
+      // Set the generated trick
+      setGeneratedTrick(randomTrick);
+    }
+  };
+
+  const getRandomTrick = () => {
+    if (filteredTricks.length === 0) return null;
+
+    // If there's only one trick in the filtered list, return it
+    if (filteredTricks.length === 1) return filteredTricks[0];
+
+    let randomIndex = Math.floor(Math.random() * filteredTricks.length);
+    let randomTrick = filteredTricks[randomIndex];
+
+    // If the newly generated trick is the same as the last one and there's more than one trick available
+    while (randomTrick === lastGeneratedTrick) {
+      randomIndex = Math.floor(Math.random() * filteredTricks.length);
+      randomTrick = filteredTricks[randomIndex];
+    }
+
+    // Set the last generated trick
+    setLastGeneratedTrick(randomTrick);
+
+    return randomTrick;
+  };
+
+  const handleClearSelection = () => {
+    // Reset selected difficulty and feature to "All"
+    setSelectedDifficulty("All");
+    setSelectedFeature("All");
+    // Clear filtered tricks and generated trick
+    setFilteredTricks(trickList);
+    setGeneratedTrick(null);
+    setLastGeneratedTrick(null);
+    setHasChanged(false); // Reset hasChanged
+
+    // Check if both inputs were already "All" before clicking the clear button
+    if (selectedDifficulty === "All" && selectedFeature === "All") {
+      // If they were, don't change the variant of the submit button
+      return;
+    }
+
+    // Otherwise, set hasChanged to true to change the submit button variant
+    setHasChanged(true);
+  };
+
+  // Determine the variant for the submit button based on submission status
+  const submitButtonVariant = hasChanged ? "outline-secondary" : "secondary";
+
+  // Render a placeholder message when no trick is generated yet
+  const generatedTrickContent = generatedTrick ? (
+    <>
+      <Card.Img
+        variant="top"
+        src={require(`../images/${generatedTrick.image}`)}
+      />
+      <Card.Body>
+        <Card.Title>{generatedTrick.name}</Card.Title>
+        <Card.Text>
+          <div>
+            <b style={{ marginRight: "10px" }}>Description:</b>
+            {generatedTrick.description}
+          </div>
+          <div>
+            <b style={{ marginRight: "10px" }}>Difficulty:</b>
+            {generatedTrick.difficulty}
+          </div>
+        </Card.Text>
+      </Card.Body>
+    </>
+  ) : (
+    <Card.Body>
+      <Card.Title>No trick generated yet</Card.Title>
+    </Card.Body>
+  );
+
   return (
-    <div className="main-page">
+    <div style={{ minHeight: "90vh" }}>
       <h1>Trick Roulette</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <div className="cardContainer" style={{ width: "90vw" }}>
+          <Row xs={1} md={2} className="g-4" style={{ height: "100%" }}>
+            <Col className="trickCol">
+              <Card>
+                <Card.Body>
+                  <Card.Title style={{ textAlign: "center" }}>
+                    <b>Random Trick</b>
+                  </Card.Title>
+                  <Card.Text>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignSelf: "center",
+                        justifyItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "baseline",
+                        }}
+                      >
+                        <h5 style={{ marginRight: "auto" }}>Difficulty:</h5>
+                        <select
+                          className="form-select form-select-lg mb-3"
+                          aria-label=".form-select-lg example"
+                          style={{ width: "25%" }}
+                          value={selectedDifficulty}
+                          onChange={(e) => {
+                            setSelectedDifficulty(e.target.value);
+                            setHasChanged(true); // Set hasChanged on input change
+                          }}
+                        >
+                          <option value="All">All</option>
+                          <option value="1">One</option>
+                          <option value="2">Two</option>
+                          <option value="3">Three</option>
+                        </select>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "baseline",
+                        }}
+                      >
+                        <h5 style={{ marginRight: "auto" }}>Feature:</h5>
 
-      <div className="roulette-container">
-        <div className="selection">
-          <label htmlFor="difficulty" className="option-tittle">
-            Difficulty:
-          </label>
-          <select
-            className="option-select"
-            id="difficulty"
-            value={selectedDifficulty}
-            onChange={(e) => setSelectedDifficulty(parseInt(e.target.value))}
-          >
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-          </select>
-        </div>
+                        <select
+                          className="form-select form-select-lg mb-3"
+                          aria-label=".form-select-lg example"
+                          style={{ width: "25%" }}
+                          value={selectedFeature}
+                          onChange={(e) => {
+                            setSelectedFeature(e.target.value);
+                            setHasChanged(true); // Set hasChanged on input change
+                          }}
+                        >
+                          <option value="All">All</option>
+                          <option value="jump">Jump</option>
+                          <option value="rail">Rail</option>
+                        </select>
+                      </div>
+                      <div className="buttons">
+                        <Button
+                          variant={submitButtonVariant} // Use dynamic variant
+                          style={{ width: "25%" }}
+                          onClick={handleSubmit}
+                        >
+                          Submit
+                        </Button>{" "}
+                        <Button
+                          variant="secondary"
+                          style={{ width: "25%" }}
+                          onClick={handleClearSelection}
+                        >
+                          Clear
+                        </Button>{" "}
+                      </div>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        style={{
+                          marginTop: "10%",
+                          alignSelf: "center",
+                          width: "50%",
+                        }}
+                        onClick={handleGenerateTrick}
+                      >
+                        Generate Trick
+                      </Button>{" "}
+                    </div>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
 
-        <div className="selection">
-          <label htmlFor="feature" className="option-tittle">
-            Feature:
-          </label>
-          <select
-            className="option-select"
-            id="feature"
-            value={selectedFeature}
-            onChange={(e) => setSelectedFeature(e.target.value)}
-          >
-            <option value="Jump">Jump</option>
-            <option value="Rail">Rail</option>
-          </select>
-        </div>
-
-        <div className="button">
-          <button onClick={handleGenerateTrick} className="button-generate">
-            Generate Trick
-          </button>
-        </div>
-
-        <div className="generated-trick">
-          <h2>Try this new trick:</h2>
-          {generatedTrick ? (
-            <div>
-              <p className="generated-description">
-                <b>Name:</b> {generatedTrick.name}
-              </p>
-              <p className="generated-description">
-                <b>Difficulty:</b> {generatedTrick.difficulty}
-              </p>
-              <p className="generated-description">
-                <b>Feature:</b> {generatedTrick.feature}
-              </p>
-              <p className="generated-description">
-                <b>Description:</b> {generatedTrick.description}
-              </p>
-            </div>
-          ) : (
-            <p className="generated-description">
-              No trick generated yet. Click the button to generate.
-            </p>
-          )}
+            <Col
+              key={generatedTrick ? generatedTrick.id : "no-trick"}
+              className="trickCol"
+            >
+              <Card style={{ height: "100%" }}>{generatedTrickContent}</Card>
+            </Col>
+          </Row>
         </div>
       </div>
     </div>

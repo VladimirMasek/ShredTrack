@@ -1,1 +1,9 @@
-{"name":"Indy Grab","image":"indy_grab.jpg","description":"The rider grabs the toe edge of the snowboard between the bindings with the rear hand while bending the knees and pulling the board upward.","difficulty":2,"feature":"jump","points":66,"id":"e16aef7baa5f865f9fb001a45f1188b5"}
+{
+  "name": "Indy Grab",
+  "image": "indy_grab.jpg",
+  "description": "The rider grabs the toe edge of the snowboard between the bindings with the rear hand while bending the knees and pulling the board upward.",
+  "difficulty": 2,
+  "feature": "jump",
+  "points": 66,
+  "id": "e16aef7baa5f865f9fb001a45f1188b5"
+}
