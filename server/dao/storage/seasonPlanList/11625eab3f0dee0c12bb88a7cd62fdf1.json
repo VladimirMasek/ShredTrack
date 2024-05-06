@@ -1,11 +1,1 @@
-{
-  "startDate": "2024-11-20T09:00:00Z",
-  "endDate": "2024-12-20T17:00:00Z",
-  "userId": "2c3c4d5e6f7g8h9i0j1a2b3c4d5e6",
-  "userTrickList": [
-    { "id": "1a2b3c4d5e6f7g8h9i0j1a2b3c4d5", "finished": 1 },
-    { "id": "0j1a2b3c4d5e6f7g8h9i0j1a2b3c4", "finished": 0 },
-    { "id": "z1a2b3c4d5e6f7g8h9i0j1a2b3c4d", "finished": 1 }
-  ],
-  "id": "11625eab3f0dee0c12bb88a7cd62fdf1"
-}
+{"startDate":"2024-11-20T09:00:00Z","endDate":"2024-12-20T17:00:00Z","userId":"4ee825ce8bb39f03c1682e05a73786d5","userTrickList":[{"id":"1a2b3c4d5e6f7g8h9i0j1a2b3c4d5","finished":1},{"id":"0j1a2b3c4d5e6f7g8h9i0j1a2b3c4","finished":0},{"id":"z1a2b3c4d5e6f7g8h9i0j1a2b3c4d","finished":1},{"id":"28f4c32b7f0f1414263ce93c1b710318","finished":1},{"id":"249ab28c543a559099df553a3712f188","finished":1},{"id":"586ebe7c94698a9fc3b5fbb419447952","finished":1},{"id":"64a383c2598b33cb5e9261906e2ea266","finished":1}],"id":"11625eab3f0dee0c12bb88a7cd62fdf1"}

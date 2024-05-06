@@ -70,7 +70,9 @@ const Tricklopedia = () => {
   };
 
   return (
-    <div style={{ minHeight: "88vh" }}>
+    <div
+      style={{ minHeight: "88vh", paddingLeft: "10px", paddingRight: "10px" }}
+    >
       <h1>Tricklopedia</h1>
       <Row xs={1} md={2} className="g-4">
         {trickList.map((trick) => (
@@ -83,7 +85,7 @@ const Tricklopedia = () => {
               />
               <Card.Body>
                 <Card.Title>{trick.name}</Card.Title>
-                <Card.Text>
+                <Card.Text style={{ minHeight: "15vh" }}>
                   <div>
                     <b style={{ marginRight: "10px" }}>Description:</b>
                     {trick.description}
@@ -94,6 +96,7 @@ const Tricklopedia = () => {
                   </div>
                   {loggedInUser && (
                     <Button
+                      style={{ marginTop: "10px" }}
                       variant={
                         isTrickInSeasonPlan(trick.id) ? "danger" : "success"
                       }
